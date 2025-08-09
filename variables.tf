@@ -37,6 +37,11 @@ variable "ami_id" {
   default     = ""
 }
 
+variable "cluster_name" {
+  description = "The name of the cluster."
+  type        = string
+  default     = ""
+}
 
 variable "nodepool_consolidate_after" {
   description = "The duration after which Karpenter will consolidate nodes."

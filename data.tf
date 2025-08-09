@@ -4,7 +4,7 @@ data "aws_ssm_parameter" "pods_subnet" {
 }
 
 data "aws_eks_cluster" "main" {
-  name = "${var.project_name}-cluster"
+  name = var.solidstack_vpc_module ? "${var.project_name}-cluster" : var.cluster_name
 }
 
 data "aws_eks_cluster_auth" "main" {
