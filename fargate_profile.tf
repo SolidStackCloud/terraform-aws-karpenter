@@ -2,6 +2,7 @@ resource "aws_eks_fargate_profile" "karpenter" {
   cluster_name           = data.aws_eks_cluster.main.id
   fargate_profile_name   = "karpenter"
   pod_execution_role_arn = aws_iam_role.karpenter_fargate_profile.arn
+  subnet_ids             = data.aws_eks_cluster.main.vpc_config[0].subnet_ids
   selector {
     namespace = "karpenter"
   }

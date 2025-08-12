@@ -4,7 +4,7 @@ resource "helm_release" "karpenter" {
   create_namespace = true
   chart            = "oci://public.ecr.aws/karpenter/karpenter"
   version          = var.karpenter_version
-  force_update = true
+  force_update     = true
   set = [
     {
       name  = "settings.clusterName"
@@ -12,7 +12,7 @@ resource "helm_release" "karpenter" {
     },
     {
       name  = "settings.clusterEndpoint"
-      value = data.aws_eks_cluster.main.endpoint 
+      value = data.aws_eks_cluster.main.endpoint
     },
     {
       name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
@@ -32,7 +32,7 @@ resource "helm_release" "karpenter" {
     }
   ]
 
-  depends_on = [ aws_eks_fargate_profile.karpenter ]
+  depends_on = [aws_eks_fargate_profile.karpenter]
 }
 
 resource "aws_iam_instance_profile" "karpenter" {
@@ -48,7 +48,7 @@ data "aws_iam_policy_document" "karpenter" {
     effect  = "Allow"
 
     principals {
-      identifiers = [aws_iam_openid_connect_provider.eks.arn]
+      identifiers = [data.aws_ssm_parameter.oidc_arn[0].value]
       type        = "Federated"
     }
   }

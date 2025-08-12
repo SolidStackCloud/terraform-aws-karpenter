@@ -1,5 +1,5 @@
 resource "kubectl_manifest" "nodepool" {
-    yaml_body = <<YAML
+  yaml_body  = <<YAML
 apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:
@@ -40,5 +40,5 @@ spec:
         kind: EC2NodeClass
         name: "default-karpenter-nodeclass"
 YAML
-  depends_on = [ aws_iam_instance_profile.karpenter, helm_release.karpenter ]
+  depends_on = [aws_iam_instance_profile.karpenter, helm_release.karpenter]
 }

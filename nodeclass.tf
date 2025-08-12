@@ -1,5 +1,5 @@
 resource "kubectl_manifest" "workers_nodes_karpenter" {
-    yaml_body = <<YAML
+  yaml_body  = <<YAML
 apiVersion: karpenter.k8s.aws/v1
 kind: EC2NodeClass
 metadata:
@@ -15,9 +15,9 @@ spec:
   securityGroupSelectorTerms:
   - id: "${data.aws_eks_cluster.main.vpc_config.0.cluster_security_group_id}"
   subnetSelectorTerms:
-%{ for subnet_id in var.solidstack_vpc_module ? tolist(split(",", data.aws_ssm_parameter.pods_subnet[0].value)) : var.pods_subnets ~}
+%{for subnet_id in var.solidstack_vpc_module ? data.aws_eks_cluster.main.vpc_config[0].subnet_ids : var.pods_subnets~}
   - id: ${subnet_id}
-%{ endfor ~}
+%{endfor~}
   blockDeviceMappings:
   - deviceName: /dev/xvda
     ebs:
@@ -26,5 +26,5 @@ spec:
       deleteOnTermination: true
       encrypted: true  
 YAML
-  depends_on = [ aws_iam_instance_profile.karpenter, helm_release.karpenter ]
+  depends_on = [aws_iam_instance_profile.karpenter, helm_release.karpenter]
 }

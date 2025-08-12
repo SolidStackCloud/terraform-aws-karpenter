@@ -14,13 +14,17 @@ terraform {
     }
   }
   backend "s3" {
-    # Configure seu backend
+    region  = "us-east-1"
+    bucket  = "terraform-statesfiles-lucas"
+    key     = "karpenter/terraform.tfstate"
+    profile = "select-dev"
+
   }
 }
 
 provider "aws" {
   region  = var.region
-  profile = "seu-perfil-aws"
+  profile = "select-dev"
 }
 
 provider "helm" {
