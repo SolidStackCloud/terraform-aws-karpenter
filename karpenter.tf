@@ -32,25 +32,24 @@ resource "helm_release" "karpenter" {
     }
   ]
 
-  depends_on = [aws_eks_fargate_profile.karpenter]
 }
 
-resource "aws_iam_instance_profile" "karpenter" {
-  name = "karpenter"
-  role = aws_iam_role.karpenter.name
-}
+
 
 #### Controller IAM
 
 data "aws_iam_policy_document" "karpenter" {
   statement {
-    actions = ["sts:AssumeRoleWithWebIdentity"]
     effect  = "Allow"
-
+    
     principals {
-      identifiers = [data.aws_ssm_parameter.oidc_arn[0].value]
-      type        = "Federated"
+      identifiers = ["pods.eks.amazonaws.com"]
+      type        = "Service"
     }
+    actions = [
+      "sts:AssumeRole",
+      "sts:TagSession"
+    ]
   }
 }
 
@@ -110,4 +109,11 @@ resource "aws_iam_policy_attachment" "karpenter" {
   ]
 
   policy_arn = aws_iam_policy.karpenter.arn
+}
+
+resource "aws_eks_pod_identity_association" "karpenter" {
+  cluster_name    = data.aws_eks_cluster.main.id
+  namespace       = "karpenter"
+  service_account = "karpenter"
+  role_arn        = aws_iam_role.karpenter.arn
 }

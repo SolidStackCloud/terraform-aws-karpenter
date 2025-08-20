@@ -6,7 +6,7 @@ terraform {
     }
     helm = {
       source  = "hashicorp/helm"
-      version = "~> 3.0.2"
+      version = "3.0.2"
     }
     kubectl = {
       source  = "gavinbunney/kubectl"
@@ -16,7 +16,7 @@ terraform {
   backend "s3" {
     region  = "us-east-1"
     bucket  = "terraform-statesfiles-lucas"
-    key     = "karpenter/terraform.tfstate"
+    key     = "network/terraform.tfstate"
     profile = "select-dev"
 
   }
@@ -33,10 +33,4 @@ provider "helm" {
     cluster_ca_certificate = base64decode(data.aws_eks_cluster.main.certificate_authority[0].data)
     token                  = data.aws_eks_cluster_auth.main.token
   }
-}
-
-provider "kubectl" {
-  host                   = data.aws_eks_cluster.main.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.main.certificate_authority[0].data)
-  token                  = data.aws_eks_cluster_auth.main.token
 }
